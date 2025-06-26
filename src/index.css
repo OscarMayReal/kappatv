@@ -52,6 +52,9 @@
 .menu.isFocused > .menuinner {
   width: 300px !important;
   background: linear-gradient(270deg, #00000000, #000000fa);
+  /* background-color: #0000009c;
+  mask: linear-gradient(270deg, #00000000, #000000fa);
+  backdrop-filter: blur(20px); */
 }
 
 .menu:not(.isFocused) > .menuinner > .menuitem {
@@ -134,9 +137,63 @@
   display: none;
 }
 
+.homeheadertitle {
+  font-size: 24px;
+  font-weight: 600;
+  padding-left: 25px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.homesearchbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 999px;
+  height: 25px;
+  width: 250px;
+  background-color: #ffffff39;
+  transition: all 0.1s ease-in-out;
+}
+
+.homesearchbox.isFocused {
+  background-color: #ffffff;
+  color: #000000;
+  scale: 1.1;
+}
+
+.headericon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: all 0.1s ease-in-out;
+}
+
+.headericon.isFocused {
+  background-color: #ffffff;
+  color: #000000;
+  scale: 1.1;
+}
+
+.homeheader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
 .appitem {
   height: 120px;
-  width: 180px;
+  width: 220px;
   flex-shrink: 0;
   border-radius: 10px;
   background-color: #ffffff;
@@ -168,6 +225,7 @@
   margin: 50px;
   margin-left: 25px;
   margin-bottom: 0px;
+  margin-top: 0px;
   width: calc(100% - 75px);
   height: calc(40vh - 50px);
   background-color: #ffffff;

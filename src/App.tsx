@@ -1,7 +1,7 @@
 import './App.css'
 import { FocusNode, useActiveNode, useFocusHierarchy, useLeafFocusedNode, useSetFocus } from '@please/lrud';
 import type { FocusEvent, LRUDEvent } from '@please/lrud/dist/types';
-import { HomeIcon, SettingsIcon, LibraryIcon, UserIcon, LayoutGridIcon, StoreIcon, SearchIcon } from 'lucide-react';
+import { HomeIcon, SettingsIcon, LibraryIcon, UserIcon, LayoutGridIcon, StoreIcon, SearchIcon, PlaySquareIcon, Tv2Icon, BellIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 var MenuItem = ({ id, onClick, title, Icon, setCurrentPage }: { id: string, onClick: () => void, title: string, Icon: React.JSX.ElementType, setCurrentPage: (page: string) => void }) => {
@@ -29,6 +29,18 @@ var MenuItem = ({ id, onClick, title, Icon, setCurrentPage }: { id: string, onCl
       <div className='menuitemtitle'>{title}</div>
     </FocusNode>
   )
+}
+
+var launchApp = ({url, useragent}: {url: string, useragent?: string}) => {
+  console.log("launchapp");
+  fetch('/api/launchapp/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json',
+    },
+    body: JSON.stringify({ url, useragent }),
+  });
 }
 
 var MenuSidebar = ({ setCurrentPage, currentPage }: { setCurrentPage: (page: string) => void, currentPage: string }) => {
@@ -62,7 +74,7 @@ var MenuSidebar = ({ setCurrentPage, currentPage }: { setCurrentPage: (page: str
 
 var AppItem = ({id, onClick, title, Icon, type}: {id: string, onClick: () => void, title: string, Icon: React.JSX.ElementType, type?: string}) => {
   return (
-    <FocusNode focusId={"appitem_" + id} className={'appitem' + (type === 'apppage' ? ' apppageitem' : '')} onSelected={() => {onClick();}} onFocused={(e: FocusEvent) => {
+    <FocusNode focusId={"appitem_" + id} className={'appitem' + (type === 'apppage' ? ' apppageitem' : '')} onSelected={onClick} onFocused={(e: FocusEvent) => {
       console.log(e.focusNode?.elRef.current);
       e.focusNode?.elRef.current?.scrollIntoView({ behavior: 'smooth' });
     }}>
@@ -75,6 +87,7 @@ var AppItem = ({id, onClick, title, Icon, type}: {id: string, onClick: () => voi
 var HomePage = () => {
   return (
     <FocusNode orientation="vertical" className='mainfocusnode' focusId='mainfocusnode'>
+      <HomeHeader />
       <MainBanner />
       <AppRow />
     </FocusNode>
@@ -99,42 +112,41 @@ var AppRow = () => {
         <div>Apps</div>
       </div>
       <div className='approw' ref={appRow}>
-        <AppItem id="app1" onClick={() => console.log('app1')} title="App 1" Icon={LayoutGridIcon}/>
-        <AppItem id="app2" onClick={() => console.log('app2')} title="App 2" Icon={LayoutGridIcon}/>
-        <AppItem id="app3" onClick={() => console.log('app3')} title="App 3" Icon={LayoutGridIcon}/>
-        <AppItem id="app4" onClick={() => console.log('app4')} title="App 4" Icon={LayoutGridIcon}/>
-        <AppItem id="app5" onClick={() => console.log('app5')} title="App 5" Icon={LayoutGridIcon}/>
-        <AppItem id="app6" onClick={() => console.log('app6')} title="App 6" Icon={LayoutGridIcon}/>
-        <AppItem id="app7" onClick={() => console.log('app7')} title="App 7" Icon={LayoutGridIcon}/>
-        <AppItem id="app8" onClick={() => console.log('app8')} title="App 8" Icon={LayoutGridIcon}/>
-        <AppItem id="app9" onClick={() => console.log('app9')} title="App 9" Icon={LayoutGridIcon}/>
+        {appItems.map((appItem) => (
+          <AppItem key={appItem.id} {...appItem} />
+        ))}
       </div>
     </FocusNode>
   )
 }
 
 var appItems = [
-  { id: 'app1', onClick: () => console.log('app1'), title: 'App 1', Icon: LayoutGridIcon },
-  { id: 'app2', onClick: () => console.log('app2'), title: 'App 2', Icon: LayoutGridIcon },
-  { id: 'app3', onClick: () => console.log('app3'), title: 'App 3', Icon: LayoutGridIcon },
-  { id: 'app4', onClick: () => console.log('app4'), title: 'App 4', Icon: LayoutGridIcon },
-  { id: 'app5', onClick: () => console.log('app5'), title: 'App 5', Icon: LayoutGridIcon },
-  { id: 'app6', onClick: () => console.log('app6'), title: 'App 6', Icon: LayoutGridIcon },
-  { id: 'app7', onClick: () => console.log('app7'), title: 'App 7', Icon: LayoutGridIcon },
-  { id: 'app8', onClick: () => console.log('app8'), title: 'App 8', Icon: LayoutGridIcon },
-  { id: 'app9', onClick: () => console.log('app9'), title: 'App 9', Icon: LayoutGridIcon },
-  { id: 'app10', onClick: () => console.log('app10'), title: 'App 10', Icon: LayoutGridIcon },
-  { id: 'app11', onClick: () => console.log('app11'), title: 'App 11', Icon: LayoutGridIcon },
-  { id: 'app12', onClick: () => console.log('app12'), title: 'App 12', Icon: LayoutGridIcon },
-  { id: 'app13', onClick: () => console.log('app13'), title: 'App 13', Icon: LayoutGridIcon },
-  { id: 'app14', onClick: () => console.log('app14'), title: 'App 14', Icon: LayoutGridIcon },
-  { id: 'app15', onClick: () => console.log('app15'), title: 'App 15', Icon: LayoutGridIcon },
-  { id: 'app16', onClick: () => console.log('app16'), title: 'App 16', Icon: LayoutGridIcon },
-  { id: 'app17', onClick: () => console.log('app17'), title: 'App 17', Icon: LayoutGridIcon },
-  { id: 'app18', onClick: () => console.log('app18'), title: 'App 18', Icon: LayoutGridIcon },
-  { id: 'app19', onClick: () => console.log('app19'), title: 'App 19', Icon: LayoutGridIcon },
-  { id: 'app20', onClick: () => console.log('app20'), title: 'App 20', Icon: LayoutGridIcon },
+  { id: 'com.googlr.youtube.leanback', onClick: () => launchApp({url: 'https://www.youtube.com/tv', useragent: 'Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)'} as any), title: 'Youtube Leanback', Icon: PlaySquareIcon },
 ];
+
+var HomeHeader = () => {
+  return (
+    <FocusNode focusId="homeheader" className="homeheader" orientation="horizontal">
+      <div className='homeheadertitle'>
+        <Tv2Icon style={{flexShrink: 0}} />
+        <div>KappaTV</div>
+      </div>
+      <div style={{ flexGrow: 1 }}></div>
+      <FocusNode focusId="homesearchbox" className="homesearchbox">
+        <SearchIcon style={{flexShrink: 0}} />
+        <div>Search</div>
+      </FocusNode>
+      <div style={{ flexGrow: 1 }}></div>
+      <FocusNode focusId="headernotificationicon" className="headericon">
+        <BellIcon style={{flexShrink: 0}} />
+      </FocusNode>
+      <FocusNode focusId="headerprofileicon" className="headericon">
+        <UserIcon style={{flexShrink: 0}} />
+      </FocusNode>
+      <div style={{ width: '50px' }}></div>
+    </FocusNode>
+  )
+}
 
 var AppPageRow = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -148,10 +160,10 @@ var AppPageRow = () => {
       if (!container) return;
       
       const containerWidth = container.clientWidth;
-      const itemWidth = 180;
+      const itemWidth = 220;
       const gap = 30;
       
-      const calculatedItems = Math.max(1, Math.floor((containerWidth - 75) / (itemWidth + gap)));
+      const calculatedItems = Math.max(1, Math.floor((containerWidth - 75) / (itemWidth + gap)) + 1);
       
       setItemsPerRow(calculatedItems);
     };
@@ -168,7 +180,14 @@ var AppPageRow = () => {
   for (let i = 0; i < appItems.length; i += itemsPerRow) {
     rows.push(appItems.slice(i, i + itemsPerRow));
   }
-  
+
+  var remainingItems = 0;
+
+  if (rows.length < itemsPerRow) {
+    remainingItems = itemsPerRow - rows[rows.length - 1].length;
+  }
+    
+  console.log("remainingItems: " + remainingItems);
   return (
     <div ref={containerRef}>
       {rows.map((rowItems, rowIndex) => (
@@ -182,6 +201,9 @@ var AppPageRow = () => {
               Icon={item.Icon}
               type="apppage"
             />
+          ))}
+          {rowIndex === rows.length - 1 && Array.from({ length: remainingItems }, (_, index) => (
+            <div key={index} style={{ width: '180px', height: '120px'}} />
           ))}
         </FocusNode>
       ))}

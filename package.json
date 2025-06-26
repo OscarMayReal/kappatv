@@ -7,13 +7,17 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "electron ./electron.js"
   },
   "dependencies": {
     "@please/lrud": "^1.0.0",
+    "electron": "^37.1.0",
+    "express": "^5.1.0",
     "lucide-react": "^0.523.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "vite-express": "^0.21.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
