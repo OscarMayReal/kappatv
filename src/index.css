@@ -41,6 +41,7 @@
   padding: 25px;
   width: 50px !important;
   height: calc(100vh - 50px);
+  background: linear-gradient(270deg, #00000000, #00000000);
   transition: all 0.1s ease-in-out;
 }
 
@@ -50,7 +51,6 @@
 
 .menu.isFocused > .menuinner {
   width: 300px !important;
-  background: #464646;
   background: linear-gradient(270deg, #00000000, #000000fa);
 }
 
@@ -66,6 +66,11 @@
   font-size: 16px;
   transition: all 0.1s ease-in-out;
   width: auto;
+  font-weight: 400;
+}
+
+.menuitem.isFocused > .menuitemtitle {
+  font-weight: 600;
 }
 
 .menuitem {
@@ -101,6 +106,24 @@
   overflow-x: scroll;
   padding: 50px;
   padding-top: 25px;
+  padding-left: 25px;
+  width: calc(100% - 75px);
+  scroll-behavior: smooth;
+  scroll-padding: 75px;
+}
+
+.appitem.apppageitem {
+  flex-shrink: 1 !important;
+}
+
+.apppagerow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+  padding: 50px;
+  padding-bottom: 0px;
+  padding-top: 30px;
   padding-left: 25px;
   width: calc(100% - 75px);
   scroll-behavior: smooth;
@@ -150,6 +173,7 @@
   background-color: #ffffff;
   transition: all 0.1s ease-in-out;
   border-radius: 15px;
+  outline: 0px solid transparent;
 }
 
 .mainbanner.isFocused {
