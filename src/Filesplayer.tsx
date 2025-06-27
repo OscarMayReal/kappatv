@@ -23,6 +23,7 @@ var loadFiles = (path: string) => {
     });
 }
 
+<<<<<<< HEAD
 var openFile = (path: string) => {
     return new Promise((resolve, reject) => {
         var fs = window.require('fs');
@@ -41,6 +42,8 @@ var useOpenFile = (path: string) => {
     return file;
 }
 
+=======
+>>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
 var useFiles = (path: string) => {
     var reload = () => {
         setFiles({loaded: false, reload: true, data: []});
@@ -54,7 +57,11 @@ var useFiles = (path: string) => {
     return files;
 }
 
+<<<<<<< HEAD
 var FilesPage = ({setZone, setCurrentFile}: {setZone: (zone: string) => void, setCurrentFile: (file: string) => void}) => {
+=======
+var FilesPage = () => {
+>>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
     var files = useFiles("./");
     var profile = useActiveProfile();
     return (
@@ -64,13 +71,18 @@ var FilesPage = ({setZone, setCurrentFile}: {setZone: (zone: string) => void, se
             </Header>
             <List>
                 {files.data.map((file) => {
+<<<<<<< HEAD
                     return <ListItem key={file.name} name={file.name} id={file.name} Icon={file.isDirectory ? FolderIcon : PlaySquareIcon} onClick={() => {setCurrentFile(file.name); setZone("mediaplayer")}} />
+=======
+                    return <ListItem key={file.name} name={file.name} id={file.name} Icon={file.isDirectory ? FolderIcon : PlaySquareIcon} />
+>>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
                 })}
             </List>
         </div>
     )
 }
 
+<<<<<<< HEAD
 var MediaPlayerView = ({CurrentFile}: {CurrentFile: string}) => {
     var file = useOpenFile(CurrentFile);
     return (
@@ -96,5 +108,16 @@ export function FilesPlayer() {
             { id: 'flexgrow', type: 'flexgrow' },
             { id: 'exit', onClick: () => close(), title: 'Exit', Icon: XIcon, page: <div>test2</div> },
         ]} /> : <MediaPlayerView CurrentFile={CurrentFile} />
+=======
+export function FilesPlayer() {
+    return (
+        <SidebarView items={[
+            { id: 'flexgrow2', type: 'flexgrow' },
+            { id: 'files', onClick: () => console.log('files'), title: 'Files', Icon: FolderIcon, page: <FilesPage /> },
+            { id: 'files2', onClick: () => console.log('files2'), title: 'Files2', Icon: PlaySquareIcon, page: <MediaPlayer url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" /> },
+            { id: 'flexgrow', type: 'flexgrow' },
+            { id: 'exit', onClick: () => close(), title: 'Exit', Icon: XIcon, page: <div>test2</div> },
+        ]} />
+>>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
     )
 }
