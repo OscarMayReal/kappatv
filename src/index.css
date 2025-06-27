@@ -443,7 +443,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-<<<<<<< HEAD
 .videotitlearea {
     display: flex;
     flex-direction: row;
@@ -469,8 +468,6 @@ button:focus-visible {
     gap: 10px;
 }
 
-=======
->>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
 .mediaplayercontrolsrow {
   display: flex;
   flex-direction: row;
@@ -478,12 +475,8 @@ button:focus-visible {
   gap: 10px;
   width: 100%;
   padding: 50px;
-<<<<<<< HEAD
   background: linear-gradient(180deg, #00000000, #000000a7);
   transition: all 0.1s ease-in-out;
-=======
-  background: linear-gradient(180deg, #00000000, #000000a5);
->>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
 }
 
 .mediaplayerbase {
@@ -509,10 +502,7 @@ button:focus-visible {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-<<<<<<< HEAD
     transition: all 0.1s ease-in-out;
-=======
->>>>>>> ab92cc7bcc5a045d426d3172963c97e2fba1600a
 }
 
 .mediaplayercontrol {
