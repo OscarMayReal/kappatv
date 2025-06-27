@@ -15,6 +15,11 @@ server.on('message', (message) => {
 function launchApp(json) {
     appwindow = new BrowserWindow({
         fullscreen: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        }
     });
     appwindow.webContents.setUserAgent(json.useragent);
     appwindow.loadURL(json.url);

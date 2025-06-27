@@ -1,0 +1,12 @@
+{
+    "profiles": [
+        {
+            "name": "User Name",
+            "email": "user@quntem.co.uk"
+        },
+        {
+            "name": "User2",
+            "email": "user2@quntem.co.uk"
+        }
+    ]
+}

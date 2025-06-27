@@ -1,10 +1,32 @@
 import './App.css'
-import { FocusNode, useActiveNode, useFocusHierarchy, useLeafFocusedNode, useSetFocus } from '@please/lrud';
+import { FocusNode, useActiveNode, useFocusHierarchy, useFocusNode, useFocusNodeById, useLeafFocusedNode, useSetFocus, } from '@please/lrud';
 import type { FocusEvent, LRUDEvent } from '@please/lrud/dist/types';
-import { HomeIcon, SettingsIcon, LibraryIcon, UserIcon, LayoutGridIcon, StoreIcon, SearchIcon, PlaySquareIcon, Tv2Icon, BellIcon } from 'lucide-react';
+import { HomeIcon, SettingsIcon, LibraryIcon, UserIcon, LayoutGridIcon, StoreIcon, SearchIcon, PlaySquareIcon, Tv2Icon, BellIcon, MoonStarIcon, Triangle, TriangleIcon, FolderIcon, PartyPopperIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-var MenuItem = ({ id, onClick, title, Icon, setCurrentPage }: { id: string, onClick: () => void, title: string, Icon: React.JSX.ElementType, setCurrentPage: (page: string) => void }) => {
+var userProfile = {
+  name: "User Name",
+  email: "user@quntem.co.uk",
+}
+
+var getProfiles = async () => {
+  var profiles = await fetch("/api/profiles/get");
+  var json =  await (profiles.json());
+  return json.profiles;
+}
+
+var useProfiles = () => {
+  var [profiles, setProfiles] = useState({loaded: false, data: []});
+  if (!profiles.loaded) {
+    getProfiles().then((data) => {
+      console.log(data);
+      setProfiles({loaded: true, data: data});
+    });
+  }
+  return profiles;
+}
+
+var MenuItem = ({ id, onClick, title, Icon, setCurrentPage, isMenuFocused, setIsMenuFocused }: { id: string, onClick: () => void, title: string, Icon: React.JSX.ElementType, setCurrentPage: (page: string) => void, isMenuFocused: boolean, setIsMenuFocused: (focused: boolean) => void }) => {
   var currentNode = useLeafFocusedNode();
   var [ownFocused, setOwnFocused] = useState(false);
   var setFocused = useSetFocus();
@@ -14,6 +36,7 @@ var MenuItem = ({ id, onClick, title, Icon, setCurrentPage }: { id: string, onCl
     <FocusNode focusId={"menuitem_" + id} className={'menuitem' + (ownFocused ? ' isCurrent' : '')} onRight={() => {
       setOwnFocused(true)
       window.wasMenuFocused = false;
+      setIsMenuFocused(false);
     }} onUp={() => {
       setOwnFocused(false)
     }} onDown={() => {
@@ -24,9 +47,9 @@ var MenuItem = ({ id, onClick, title, Icon, setCurrentPage }: { id: string, onCl
       if (window.wasMenuFocused) {
         setCurrentPage("menuitem_" + id);
       }
-    }} onSelected={() => {onClick(); setFocused("mainfocusnode"); setOwnFocused(true); window.wasMenuFocused = false;}}>
+    }} onSelected={() => {onClick(); setFocused("mainfocusnode"); setOwnFocused(true); window.wasMenuFocused = false; setIsMenuFocused(false); }}>
       <Icon style= {{flexShrink: 0}} />
-      <div className='menuitemtitle'>{title}</div>
+      <div className='menuitemtitle'>{title + (currentNode?.focusId === "menuitem_" + id && id == "profile" ? " (Sign Out)" : "")}</div>
     </FocusNode>
   )
 }
@@ -43,10 +66,11 @@ var launchApp = ({url, useragent}: {url: string, useragent?: string}) => {
   });
 }
 
-var MenuSidebar = ({ setCurrentPage, currentPage }: { setCurrentPage: (page: string) => void, currentPage: string }) => {
+var MenuSidebar = ({ setCurrentPage, currentPage, isMenuFocused, setIsMenuFocused, changeZone, userProfile }: { setCurrentPage: (page: string) => void, currentPage: string, isMenuFocused: boolean, setIsMenuFocused: (focused: boolean) => void, changeZone: (zone: string) => void, userProfile: {email: string, name: string} }) => {
   var currentNode = useFocusHierarchy();
   var setFocused = useSetFocus();
   if (currentNode.find((node: any) => node.focusId === "menu") && !window.wasMenuFocused) {
+    setIsMenuFocused(true);
     console.log("menu focused");
     console.log(currentPage);
     setFocused(currentPage);
@@ -58,15 +82,15 @@ var MenuSidebar = ({ setCurrentPage, currentPage }: { setCurrentPage: (page: str
       window.wasMenuFocused = false;
     }}>
       <div className='menuinner'>
-        <MenuItem id="profile" onClick={() => console.log('profile')} title="Profile" Icon={UserIcon} setCurrentPage={setCurrentPage} />
+        <MenuItem id="profile" onClick={() => changeZone("profile")} title={userProfile.name} Icon={UserIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
         <div style={{ flexGrow: 1 }} />
-        <MenuItem id="search" onClick={() => console.log('search')} title="Search" Icon={SearchIcon} setCurrentPage={setCurrentPage} />
-        <MenuItem id="home" onClick={() => console.log('home')} title="Home" Icon={HomeIcon} setCurrentPage={setCurrentPage} />
-        <MenuItem id="apps" onClick={() => console.log('apps')} title="Apps" Icon={LayoutGridIcon} setCurrentPage={setCurrentPage} />
-        <MenuItem id="library" onClick={() => console.log('library')} title="Library" Icon={LibraryIcon} setCurrentPage={setCurrentPage} />
-        <MenuItem id="store" onClick={() => console.log('store')} title="Store" Icon={StoreIcon} setCurrentPage={setCurrentPage} />
+        <MenuItem id="search" onClick={() => console.log('search')} title="Search" Icon={SearchIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
+        <MenuItem id="home" onClick={() => console.log('home')} title="Home" Icon={HomeIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
+        <MenuItem id="apps" onClick={() => console.log('apps')} title="Apps" Icon={LayoutGridIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
+        <MenuItem id="library" onClick={() => console.log('library')} title="Library" Icon={LibraryIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
+        <MenuItem id="store" onClick={() => console.log('store')} title="Store" Icon={StoreIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
         <div style={{ flexGrow: 1 }} />
-        <MenuItem id="settings" onClick={() => console.log('settings')} title="Settings" Icon={SettingsIcon} setCurrentPage={setCurrentPage} />
+        <MenuItem id="settings" onClick={() => console.log('settings')} title="Settings" Icon={SettingsIcon} setCurrentPage={setCurrentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} />
       </div>
     </FocusNode>
   )
@@ -84,10 +108,10 @@ var AppItem = ({id, onClick, title, Icon, type}: {id: string, onClick: () => voi
   )
 }
 
-var HomePage = () => {
+var HomePage = ({changeZone}: {changeZone: (zone: string) => void}) => {
   return (
     <FocusNode orientation="vertical" className='mainfocusnode' focusId='mainfocusnode'>
-      <HomeHeader />
+      <HomeHeader changeZone={changeZone} />
       <MainBanner />
       <AppRow />
     </FocusNode>
@@ -121,10 +145,13 @@ var AppRow = () => {
 }
 
 var appItems = [
-  { id: 'com.googlr.youtube.leanback', onClick: () => launchApp({url: 'https://www.youtube.com/tv', useragent: 'Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)'} as any), title: 'Youtube Leanback', Icon: PlaySquareIcon },
+  { id: 'com.google.youtube.leanback', onClick: () => launchApp({url: 'https://www.youtube.com/tv', useragent: 'Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)'} as any), title: 'Youtube Leanback', Icon: PlaySquareIcon },
+  { id: 'com.jellyfin.jellyfin', onClick: () => launchApp({url: 'http://localhost:8096', useragent: 'Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)'} as any), title: 'Jellyfin', Icon: TriangleIcon },
+  { id: 'com.kappatv.filesplayer', onClick: () => launchApp({url: 'http://localhost:5173/filesplayer', useragent: 'Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)'} as any), title: 'Files Player', Icon: FolderIcon },
+  { id: 'com.quntem.partymode', onClick: () => launchApp({url: 'https://partymode.quntem.co.uk', useragent: 'Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)'} as any), title: 'PartyMode', Icon: PartyPopperIcon },
 ];
 
-var HomeHeader = () => {
+var HomeHeader = ({changeZone}: {changeZone: (zone: string) => void}) => {
   return (
     <FocusNode focusId="homeheader" className="homeheader" orientation="horizontal">
       <div className='homeheadertitle'>
@@ -139,6 +166,9 @@ var HomeHeader = () => {
       <div style={{ flexGrow: 1 }}></div>
       <FocusNode focusId="headernotificationicon" className="headericon">
         <BellIcon style={{flexShrink: 0}} />
+      </FocusNode>
+      <FocusNode focusId="ambientmodeicon" className="headericon" onSelected={() => changeZone("ambient")}>
+        <MoonStarIcon style={{flexShrink: 0}} />
       </FocusNode>
       <FocusNode focusId="headerprofileicon" className="headericon">
         <UserIcon style={{flexShrink: 0}} />
@@ -231,13 +261,55 @@ var MainBanner = () => {
   )
 }
 
+var AmbientMode = ({setIsAmbientMode}: {setIsAmbientMode: (isAmbientMode: boolean) => void}) => {
+  return (
+    <FocusNode className='ambientmodecontainer' onSelected={() => setIsAmbientMode(false)} />
+  )
+}
+
+var UserSwitcher = ({setCurrentZone, setUserProfile}: {setCurrentZone: (zone: string) => void, setUserProfile: (profile: any) => void}) => {
+  var profiles = useProfiles();
+  return (
+    <FocusNode className='profilespage' orientation="horizontal" focusId="mainfocusnode">
+      <h1 className='profilespagetitle'>Select a profile to continue</h1>
+      <div className='profilespageinner'>
+        {profiles.data.map((profile, index) => (
+          <FocusNode focusId={"profile_" + index} key={index} className="profile" onSelected={async () => {
+            await fetch("http://localhost:5173/api/profiles/setactive", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json"
+              },
+              body: JSON.stringify({ profile: profile }),
+            });
+            setUserProfile(profile);
+            setCurrentZone("menu")
+          }}>
+            <div className="profileicon">
+              <UserIcon style={{flexShrink: 0}} size={40} className='profileiconinner' />
+            </div>
+            <div className='profiletitle'>{profile.name}</div>
+            <div className='profileemail'>{profile.email}</div>
+          </FocusNode>
+        ))}
+      </div>
+    </FocusNode>
+  )
+}
 
 function App() {
   var [currentPage, setCurrentPage] = useState("menuitem_home");
+  var [isMenuFocused, setIsMenuFocused] = useState(false);
+  var [currentZone, setCurrentZone] = useState("profile");
+  var [userProfile, setUserProfile] = useState({});
   return (
+    currentZone === "ambient" ? <AmbientMode setIsAmbientMode={() => setCurrentZone("menu")} /> : currentZone === "profile" ? <UserSwitcher setCurrentZone={setCurrentZone} setUserProfile={setUserProfile} /> :
     <FocusNode orientation="horizontal" className="mainrow">
-      <MenuSidebar setCurrentPage={setCurrentPage} currentPage={currentPage} />
-      {currentPage === "menuitem_home" ? <HomePage /> : currentPage === "menuitem_apps" ? <AppsPage /> : <div>Other Page</div>}
+      <MenuSidebar setCurrentPage={setCurrentPage} currentPage={currentPage} isMenuFocused={isMenuFocused} setIsMenuFocused={setIsMenuFocused} changeZone={setCurrentZone} userProfile={userProfile} />
+      <div className='pagearea' style={isMenuFocused ? { opacity: 0.5, filter: 'blur(5px)', transform: 'scale(0.95)' } : { opacity: 1, filter: 'blur(0px)', transform: 'scale(1)' } }>
+        {currentPage === "menuitem_home" ? <HomePage changeZone={setCurrentZone} /> : currentPage === "menuitem_apps" ? <AppsPage /> : currentPage === "menuitem_profile" ? <div/> : <FocusNode>Other Page</FocusNode>}
+      </div>
     </FocusNode>
   )
 }
