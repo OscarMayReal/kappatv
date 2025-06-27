@@ -23,6 +23,24 @@ var loadFiles = (path: string) => {
     });
 }
 
+var openFile = (path: string) => {
+    return new Promise((resolve, reject) => {
+        var fs = window.require('fs');
+        var file = fs.readFileSync("media/" + path);
+        resolve(file);
+    });
+}
+
+var useOpenFile = (path: string) => {
+    var [file, setFile] = useState({loaded: false, reload: () => {}, data: null});
+    if (!file.loaded) {
+        openFile(path).then((file) => {
+            setFile({loaded: true, reload: () => {}, data: file});
+        });
+    }
+    return file;
+}
+
 var useFiles = (path: string) => {
     var reload = () => {
         setFiles({loaded: false, reload: true, data: []});
@@ -36,7 +54,7 @@ var useFiles = (path: string) => {
     return files;
 }
 
-var FilesPage = () => {
+var FilesPage = ({setZone, setCurrentFile}: {setZone: (zone: string) => void, setCurrentFile: (file: string) => void}) => {
     var files = useFiles("./");
     var profile = useActiveProfile();
     return (
@@ -46,21 +64,37 @@ var FilesPage = () => {
             </Header>
             <List>
                 {files.data.map((file) => {
-                    return <ListItem key={file.name} name={file.name} id={file.name} Icon={file.isDirectory ? FolderIcon : PlaySquareIcon} />
+                    return <ListItem key={file.name} name={file.name} id={file.name} Icon={file.isDirectory ? FolderIcon : PlaySquareIcon} onClick={() => {setCurrentFile(file.name); setZone("mediaplayer")}} />
                 })}
             </List>
         </div>
     )
 }
 
-export function FilesPlayer() {
+var MediaPlayerView = ({CurrentFile}: {CurrentFile: string}) => {
+    var file = useOpenFile(CurrentFile);
     return (
-        <SidebarView items={[
+        <div style={{width: "100%", height: "100%"}}><MediaPlayer url={file.data} title={CurrentFile} /></div>
+    )
+}
+
+export function FilesPlayer() {
+    var [zone, setZone] = useState("files");
+    var [CurrentFile, setCurrentFile] = useState(null);
+    document.onkeydown = (e) => {
+        if (e.key === 'Escape') {
+            if (zone === "mediaplayer") {
+                setZone("files");
+            }
+        }
+    }
+    return (
+        zone === "files" ? <SidebarView items={[
             { id: 'flexgrow2', type: 'flexgrow' },
-            { id: 'files', onClick: () => console.log('files'), title: 'Files', Icon: FolderIcon, page: <FilesPage /> },
-            { id: 'files2', onClick: () => console.log('files2'), title: 'Files2', Icon: PlaySquareIcon, page: <MediaPlayer url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" /> },
+            { id: 'files', onClick: () => console.log('files'), title: 'Files', Icon: FolderIcon, page: <FilesPage setZone={setZone} setCurrentFile={setCurrentFile} /> },
+            { id: 'files2', onClick: () => console.log('files2'), title: 'Files2', Icon: PlaySquareIcon, page: <div>test2</div> },
             { id: 'flexgrow', type: 'flexgrow' },
             { id: 'exit', onClick: () => close(), title: 'Exit', Icon: XIcon, page: <div>test2</div> },
-        ]} />
+        ]} /> : <MediaPlayerView CurrentFile={CurrentFile} />
     )
 }

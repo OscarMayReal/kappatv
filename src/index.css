@@ -43,6 +43,7 @@ html, body {
 
 #root {
   width: 100%;
+  height: 100%;
 }
 
 .profilespage {
@@ -252,7 +253,7 @@ html, body {
   scroll-padding: 75px;
 }
 
-.approw::-webkit-scrollbar {
+*::-webkit-scrollbar {
   display: none;
 }
 
@@ -428,6 +429,31 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.videotitlearea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    padding-bottom: 30px;
+    background: linear-gradient(0deg, #00000000, #000000a7);
+    width: 100%;
+    justify-content: center;
+    transition: all 0.1s ease-in-out;
+}
+
+.videotitle {
+    font-size: 30px;
+    font-weight: 600;
+    padding-left: 25px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
 .mediaplayercontrolsrow {
   display: flex;
   flex-direction: row;
@@ -435,7 +461,8 @@ button:focus-visible {
   gap: 10px;
   width: 100%;
   padding: 50px;
-  background: linear-gradient(180deg, #00000000, #000000a5);
+  background: linear-gradient(180deg, #00000000, #000000a7);
+  transition: all 0.1s ease-in-out;
 }
 
 .mediaplayerbase {
@@ -461,6 +488,7 @@ button:focus-visible {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    transition: all 0.1s ease-in-out;
 }
 
 .mediaplayercontrol {
